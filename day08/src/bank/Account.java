@@ -30,6 +30,10 @@ public class Account {
 		return "Account [accNo=" + accNo + ", balance=" + balance + "]";
 	}
 	public void deposit(double money) {
+		if(money < 1) {
+			System.out.println("입금 금액 오류");
+			return;
+		}
 		this.balance += money;
 	}
 	
