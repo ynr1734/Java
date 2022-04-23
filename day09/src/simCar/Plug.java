@@ -94,96 +94,152 @@ public class Plug extends Simcar {
 					System.out.println("0% of battery. It will be changed to the fuel mode.");
 					this.batteryMode = false;
 					cBattery = 0;
-				// 처음으로 돌아갈지 ? 연료도 없으면 ?
-			}else if(cBattery <= 5) {
-				setStatus("GO");
-				System.out.printf("GO %dkm.\n",distance);
-				System.out.println("Warning! Low percentage of battery. \n");
-			}
-			
-			setStatus("GO");
-			System.out.printf("GO %dkm.\n",distance);
-			
-			
-		}else if (getBatteryMode() == false) {
-			cFuel -= distance/fuelE;
-			// 연료가 없거나 부족할 때
-			if(cFuel <= 0) {
-				if(getStatus().equals("GO") || getStatus().equals("BACK")) {
-					System.out.println("There's no fuel. This car would stop soon.");
-					setStatus("STOP");
-				}else {
-					System.out.println("No fuel. This car can't move.\n");
-				}
+					
+					// 남은 distance 계산
+					dWent = batteryE * dBattery;
+					distance -= dWent;
+					
+					continue;
 
-			}else if(cFuel <= 5) {
+				}else if(cBattery <= 5) {
+					setStatus("GO");
+					System.out.printf("GO %dkm.\n",distance);
+					System.out.println("Warning! Low percentage of battery. \n");
+					break;
+				}
+			
 				setStatus("GO");
 				System.out.printf("GO %dkm.\n",distance);
-				System.out.println("Warning! Lack of fuel.\n");
-			}
-			setStatus("GO");
-			System.out.printf("GO %dkm.\n",distance);
-		}
+				break;
+			
+			
+			}else {
+				cFuel -= distance/fuelE;
+				
+				// 연료가 없거나 부족할 때
+				if(cFuel <= 0) {
+					cFuel = 0;
+					if(getStatus().equals("GO") || getStatus().equals("BACK")) {
+						System.out.println("There's no fuel. This car would stop soon.");
+						setStatus("STOP");
+						break;
+					}else {
+						System.out.println("No fuel. This car can't move.\n");
+						break;
+					}
+
+				}else if(cFuel <= 5) {
+					setStatus("GO");
+					System.out.printf("GO %dkm.\n",distance);
+					System.out.println("Warning! Lack of fuel.\n");
+					break;
+				}
+				
+				setStatus("GO");
+				System.out.printf("GO %dkm.\n",distance);
+				break;
+				}
+			
+		}while(true);
+		
 	}
 
 	@Override
 	public void back(int distance) {
-		if(getBatteryMode() == true) {
-			cBattery -= distance/batteryE;
+		double dWent = 0.0;
+		double dBattery = 0.0;
+		
+		do {
+			if(getBatteryMode() == true) {
+				dBattery = cBattery;
+				cBattery -= distance/batteryE;
 			
-			// 배터리가 없거나 부족할 때
-			if(cBattery <= 0) {
-				System.out.println("0% of battery. It will be changed to the fuel mode.");
-				this.batteryMode = false;
-				cBattery = 0;
-				// 처음으로 돌아갈지 ? 연료도 없으면 ?
-			}else if(cBattery <= 5) {
+				// 배터리가 없거나 부족할 때
+				if(cBattery < 0) {
+					System.out.println("0% of battery. It will be changed to the fuel mode.");
+					this.batteryMode = false;
+					cBattery = 0;
+					
+					// 남은 distance 계산
+					dWent = batteryE * dBattery;
+					distance -= dWent;
+					
+					continue;
+				
+				}else if(cBattery <= 5) {
+					setStatus("BACK");
+					System.out.printf("BACK %dkm.\n",distance);
+					System.out.println("Warning! Low percentage of battery. \n");
+					break;
+				}
+			
 				setStatus("BACK");
 				System.out.printf("BACK %dkm.\n",distance);
-				System.out.println("Warning! Low percentage of battery. \n");
-			}
-			
-			setStatus("BACK");
-			System.out.printf("BACK %dkm.\n",distance);
+				break;
 			
 			
-		}else if (getBatteryMode() == false) {
-			cFuel -= distance/fuelE;
-			// 연료가 없거나 부족할 때
-			if(cFuel <= 0) {
-				if(getStatus().equals("GO") || getStatus().equals("BACK")) {
-					System.out.println("There's no fuel. This car would stop soon.");
-					setStatus("STOP");
-				}else {
-					System.out.println("No fuel. This car can't move.\n");
-				}
+			}else {
+				cFuel -= distance/fuelE;
+				
+				// 연료가 없거나 부족할 때
+				if(cFuel <= 0) {
+					if(getStatus().equals("GO") || getStatus().equals("BACK")) {
+						System.out.println("There's no fuel. This car would stop soon.");
+						setStatus("STOP");
+						break;
+					}else {
+						System.out.println("No fuel. This car can't move.\n");
+						break;
+					}
 
-			}else if(cFuel <= 5) {
+				}else if(cFuel <= 5) {
+					setStatus("BACK");
+					System.out.printf("BACK %dkm.\n",distance);
+					System.out.println("Warning! Lack of fuel.\n");
+					break;
+				}
+				
 				setStatus("BACK");
-				System.out.printf("GO %dkm.\n",distance);
-				System.out.println("Warning! Lack of fuel.\n");
-			}
-			setStatus("BACK");
-			System.out.printf("BACK %dkm.\n",distance);
-		}
+				System.out.printf("BACK %dkm.\n",distance);
+				break;
+				}
+		}while(true);
+		
 	}
 
 	public void addFuel(int fuel) {
-		cFuel += fuel;
 		// 현재 연료 사이즈 > 전체 사이즈
+		if((cFuel += fuel) >= fuelSize) {
+			System.out.println("Battery is fully charged.");
+			cFuel = 100;
+		}else {
+			cFuel += fuel;
+		}
 	}
 	
 	public void chargeBattery(int per) {
-		cBattery += per;
 		// total size 보다 크면 ?
+		if((cBattery += per) >= batterySize) {
+			System.out.println("Battery is fully charged.");
+			cBattery = 100;
+		}else {
+			cBattery += per;
+		}
+		
+		// 배터리가 있으면 자동으로 electric mode로 변환 
+		if(batteryMode = false) {
+			batteryMode = true;
+		}
 	}
 	
 	
 	@Override
 	public String toString() {
-		return "Plug [batterySize=" + batterySize + ", cBattery=" + cBattery + ", batteryE=" + batteryE + ", fuelSize="
-				+ fuelSize + ", cFuel=" + cFuel + ", fuelE=" + fuelE + ", fuelType=" + fuelType + ", batteryMode="
-				+ batteryMode + ", toString()=" + super.toString() + "]";
+		return "Plug [batterySize=" + batterySize + ", cBattery=" + cBattery + ", "
+				+ "batteryE=" + batteryE + ", fuelSize="+ fuelSize + ", cFuel=" + cFuel 
+				+ ", fuelE=" + fuelE + ", fuelType=" + fuelType + ", "
+				+ "batteryMode=" + batteryMode + ",\n toString()=" + super.toString() + "]";
 	}
+	
 	
 }

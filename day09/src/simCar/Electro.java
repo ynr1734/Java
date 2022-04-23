@@ -54,37 +54,41 @@ public class Electro extends Simcar {
 			}
 
 		}else if(cBattery <= 5) {
-			setStatus("BACK");
-			System.out.printf("Back %dkm.\n",distance);
+			setStatus("GO");
+			System.out.printf("GO %dkm.\n",distance);
 			System.out.println("Warning! Low percentage of battery.\n");
+			
 		}else {
-			setStatus("BACK");
-			System.out.printf("Back %dkm.\n",distance);
+			setStatus("GO");
+			System.out.printf("GO %dkm.\n",distance);
 		}
 	}
 	
 	@Override
 	public void back(int distance) {
 		cBattery -= distance/batteryE;
-		if(cBattery == 0) {
+		
+		// 배터리가 없거나 부족할 때
+		if(cBattery <= 0) {
 			if(getStatus().equals("GO") || getStatus().equals("BACK")) {
 				System.out.println("There's no battery. This car would stop soon.");
 				setStatus("STOP");
+				
 			}else {
-				System.out.println("Warning. This car would stop soon.");
+				System.out.println("0% of Battery. This car can't move. \n");
 			}
 
 		}else if(cBattery <= 5) {
 			setStatus("BACK");
 			System.out.printf("Back %dkm.\n",distance);
-			System.out.println("There's no battery. This car would stop soon.");
+			System.out.println("Warning! Low percentage of Battery. \n");
+			
 		}else {
 			setStatus("BACK");
-			cBattery -= distance/batteryE;
 			System.out.printf("Back %dkm.\n",distance);
 		}
-		
 	}
+	
 	public void chargeBattery(int per) {
 		// total size 보다 클 때
 		if((cBattery += per) >= batterySize) {
