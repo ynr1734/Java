@@ -3,7 +3,7 @@ package simCar;
 public class Electro extends Simcar {
 
 	private int batterySize;
-	private int cBattery;
+	private double cBattery;
 	private int batteryE;
 	
 	// constructors
@@ -23,11 +23,11 @@ public class Electro extends Simcar {
 		this.batteryE = batteryE;
 	}
 		
-	public int getcBattery() {
+	public double getcBattery() {
 		return cBattery;
 	}
 
-	public void setcBattery(int cBattery) {
+	public void setcBattery(double cBattery) {
 		this.cBattery = cBattery;
 	}
 
@@ -41,29 +41,31 @@ public class Electro extends Simcar {
 
 	@Override
 	public void go(int distance) {
-		if(cBattery == 0) {
+		cBattery -= distance/batteryE;
+		
+		// 배터리가 없거나 부족할 때
+		if(cBattery <= 0) {
 			if(getStatus().equals("GO") || getStatus().equals("BACK")) {
-				System.out.println("There's no battery. This car would stop soon.");
+				System.out.println("0% of battery. This car would stop soon.");
 				setStatus("STOP");
+				
 			}else {
-				System.out.println("Warning. This car would stop soon.");
+				System.out.println("0% of battery. This car can't move.\n");
 			}
 
 		}else if(cBattery <= 5) {
-			setStatus("GO");
-			System.out.printf("GO %dkm.\n",distance);
-			System.out.println("There's no battery. This car would stop soon.");
+			setStatus("BACK");
+			System.out.printf("Back %dkm.\n",distance);
+			System.out.println("Warning! Low percentage of battery.\n");
 		}else {
-			setStatus("GO");
-			cBattery -= distance/batteryE;
-			System.out.printf("GO %dkm.\n",distance);
+			setStatus("BACK");
+			System.out.printf("Back %dkm.\n",distance);
 		}
-		
 	}
-	
 	
 	@Override
 	public void back(int distance) {
+		cBattery -= distance/batteryE;
 		if(cBattery == 0) {
 			if(getStatus().equals("GO") || getStatus().equals("BACK")) {
 				System.out.println("There's no battery. This car would stop soon.");
@@ -74,16 +76,17 @@ public class Electro extends Simcar {
 
 		}else if(cBattery <= 5) {
 			setStatus("BACK");
-			System.out.printf("BACK %dkm.\n",distance);
+			System.out.printf("Back %dkm.\n",distance);
 			System.out.println("There's no battery. This car would stop soon.");
 		}else {
 			setStatus("BACK");
 			cBattery -= distance/batteryE;
-			System.out.printf("BACK %dkm.\n",distance);
+			System.out.printf("Back %dkm.\n",distance);
 		}
 		
 	}
 	public void chargeBattery(int per) {
+		// total size 보다 클 때
 		if((cBattery += per) >= batterySize) {
 			System.out.println("Battery is fully charged");
 			cBattery = 100;
@@ -94,8 +97,8 @@ public class Electro extends Simcar {
 	
 	@Override
 	public String toString() {
-		return "Electro [batterySize=" + batterySize + ", cBattery=" + cBattery + ", batteryE=" + batteryE
-				+ ", toString()=" + super.toString() + "]";
+		return "Electro [batterySize=" + batterySize + ", cBattery=" + cBattery + ","
+				+ " batteryE=" + batteryE + ",\n toString()=" + super.toString() + "]";
 	}
 
 }

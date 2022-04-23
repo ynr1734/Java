@@ -26,7 +26,7 @@ public class Gas extends Simcar {
 		this.fuelType = "Gas";
 	}
 
-	public double iscFuel() {
+	public double getcFuel() {
 		return cFuel;
 	}
 
@@ -52,62 +52,70 @@ public class Gas extends Simcar {
 
 	@Override
 	public void go(int distance) {
+		cFuel -= distance/fuelE;
+		
 		// 연료가 없거나 부족할 때
-		if(cFuel == 0) {
+		if(cFuel <= 0) {
 			if(getStatus().equals("GO") || getStatus().equals("BACK")) {
 				System.out.println("There's no fuel. This car would stop soon.");
 				setStatus("STOP");
 			}else {
-				System.out.println("Warning. This car would stop soon.");
+				System.out.println("No fuel. This car can't move.\n");
 			}
 
 		}else if(cFuel <= 5) {
 			setStatus("GO");
-			System.out.printf("GO %dkm.\n",distance);
-			System.out.println("There's no fuel. This car would stop soon.");
+			System.out.printf("Go %dkm.\n",distance);
+			System.out.println("Warning! Lack of fuel.\n");
+			
 		}else {
 			setStatus("GO");
-			cFuel -= distance/fuelE;
-			System.out.printf("GO %dkm.\n",distance);
+			System.out.printf("Go %dkm.\n",distance);
 		}
 		
 	}
 
 	@Override
 	public void back(int distance) {
-		if(cFuel == 0) {
+		cFuel -= distance/fuelE;
+		
+		// 연료가 없거나 부족할 때
+		if(cFuel <= 0) {
 			if(getStatus().equals("GO") || getStatus().equals("BACK")) {
 				System.out.println("There's no fuel. This car would stop soon.");
 				setStatus("STOP");
 			}else {
-				System.out.println("Warning. This car would stop soon.");
+				System.out.println("No fuel. This car can't move.\n");
 			}
 
 		}else if(cFuel <= 5) {
 			setStatus("BACK");
-			System.out.printf("GO %dkm.\n",distance);
-			System.out.println("There's no fuel. This car would stop soon.");
+			System.out.printf("Back %dkm.\n",distance);
+			System.out.println("Warning! Lack of fuel.\n");
+			
 		}else {
 			setStatus("BACK");
-			cFuel -= distance/fuelE;
-			System.out.printf("GO %dkm.\n",distance);
+			System.out.printf("Back %dkm.\n",distance);
 		}
 		
 	}
 			
 	public void addFuel(int fuel) {
-		cFuel += fuel;
 		// 현재 연료 사이즈 > 전체 사이즈 ?
-		if((cFuel == 0)) {
-			
+		if((cFuel += fuel) >= fuelSize) {
+			System.out.println("Battery is fully charged.");
+			cFuel = 100;
+		}else {
+			cFuel += fuel;
 		}
 	}
 	
 	
 	@Override
 	public String toString() {
-		return "Gas [auto=" + auto + ", fuelSize=" + fuelSize + ", fuelE=" + fuelE + ", cFuel=" + cFuel + ", fuelType="
-				+ fuelType + ", toString()=" + super.toString() + "]";
+		return "Gas [auto=" + auto + ", fuelSize=" + fuelSize + ", fuelE=" + fuelE + ","
+				+ " cFuel=" + cFuel + ", fuelType=" + fuelType + ", \n"
+				+ " toString()=" + super.toString() + "]";
 	}
 
 }

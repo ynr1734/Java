@@ -5,10 +5,10 @@ public abstract class Simcar {
 	private String color;
 	private String kind;
 	private String serial;
-//	private double maxPeople;
-//	private double power;
-//	private double made;
-//	private double year;
+//	private int maxPeople;
+//	private int power;
+//	private int made;
+//	private int year;
 	private String status;
 	
 	// Constructors
@@ -49,8 +49,7 @@ public abstract class Simcar {
 	}
 	
 	public abstract void go(int distance);
-	
-	
+
 	public abstract void back(int distance); 
 	
 	
@@ -64,8 +63,8 @@ public abstract class Simcar {
 
 	@Override
 	public String toString() {
-		return "Simcar [name=" + name + ", color=" + color + ", kind=" + kind + ", serial=" + serial 
-				 + ", status=" + status + "]";
+		return "Simcar [name=" + name + ", color=" + color + ", kind=" + kind + ","
+				+ " serial=" + serial + ", status=" + status + "]";
 	}
 	
 }

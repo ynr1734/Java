@@ -13,6 +13,7 @@ public class Plug extends Simcar {
 	
 	private Boolean batteryMode;
 	
+	
 	// constructors
 	public Plug() {
 		
@@ -57,7 +58,7 @@ public class Plug extends Simcar {
 	public int getBatterySize() {
 		return batterySize;
 	}
-
+	
 	public int getBatteryE() {
 		return batteryE;
 	}
@@ -80,14 +81,19 @@ public class Plug extends Simcar {
 
 	@Override
 	public void go(int distance) {
-		if(getBatteryMode() == true) {
-			cBattery -= distance/batteryE;
-			
-			// 배터리가 없거나 부족할 때
-			if(cBattery <= 0) {
-				System.out.println("0% of battery. It will be changed to the fuel mode.");
-				this.batteryMode = false;
-				cBattery = 0;
+		double dWent = 0.0; // dwent : 움직인 거리
+		double dBattery = 0.0;
+		
+		do {
+			if(getBatteryMode() == true) {
+				dBattery = cBattery;
+				cBattery -= distance/batteryE;
+//			
+				// 배터리가 없거나 부족할 때
+				if(cBattery <= 0) {
+					System.out.println("0% of battery. It will be changed to the fuel mode.");
+					this.batteryMode = false;
+					cBattery = 0;
 				// 처음으로 돌아갈지 ? 연료도 없으면 ?
 			}else if(cBattery <= 5) {
 				setStatus("GO");
